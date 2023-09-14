@@ -44,11 +44,7 @@ def resend_evaluator(args, train_loader, test_loader, device, model, batch_size=
     cs_acc = closed_set_accuracy(cs_predictions[known_mask], test_lbls[known_mask])
     metrics = calc_ood_metrics(MSP_normality_scores, ood_labels)
     metrics["cs_acc"] = cs_acc
+    metrics["cs_preds"] = cs_predictions
+    metrics["normality_scores"] = MSP_normality_scores
 
-    return metrics 
-
-
-    
-
-
-
+    return metrics

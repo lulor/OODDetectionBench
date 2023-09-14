@@ -34,7 +34,7 @@ def linear_probe_evaluator(args, train_loader, test_loader, device, model, contr
 
     metrics = calc_ood_metrics(max_pred_prob, ood_labels)
     metrics["cs_acc"] = cs_acc
+    metrics["cs_preds"] = cs_preds
+    metrics["normality_scores"] = max_pred_prob
 
-    return metrics 
-
-
+    return metrics

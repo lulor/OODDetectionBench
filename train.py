@@ -12,7 +12,7 @@ from torch.distributed.elastic.multiprocessing.errors import record
 
 from models.resnet import get_resnet
 from models.data_helper import get_eval_dataloader, get_train_dataloader, split_train_loader, check_data_consistency
-from utils.log_utils import count_parameters, LogUnbuffered
+from utils.log_utils import count_parameters, LogUnbuffered, write_preds
 from utils.optim import LinearWarmupCosineAnnealingLR
 from utils.utils import clean_ckpt, get_aux_modules_dict, interpolate_ckpts
 from utils.dist_utils import is_main_process
@@ -33,7 +33,7 @@ def get_args():
     parser.add_argument("--dataset", default="ImageNet", help="Dataset name",
                         choices=['DTD', 'DomainNet_Real', 'DomainNet_Painting', 'DomainNet_Sketch', 'Places', 
                                  'PACS_DG', 'PACS_SS_DG', 'imagenet_ood', 'imagenet_ood_small', 'DomainNet_DGv2',
-                                 'MCM_benchmarks', 'PatternNet', 'SUN', 'ImageNet1k', "Stanford_Cars"])
+                                 'MCM_benchmarks', 'PatternNet', 'SUN', 'ImageNet1k', "Stanford_Cars", "SSB"])
     parser.add_argument("--support",
                         help="support split name")
     parser.add_argument("--test",
@@ -91,6 +91,7 @@ def get_args():
     parser.add_argument("--output_dir", type=str, default="", help="Location for output checkpoints")
     parser.add_argument("--debug", action='store_true', default=False, help="Run in debug mode, disable file logger")
     parser.add_argument("--print_args", action='store_true', default=False, help="Print args to stdout")
+    parser.add_argument("--save_preds", action="store_true", default=False, help="Save the cs and ood predictions for the test samples")
 
     # save run on wandb 
     parser.add_argument("--wandb", action='store_true', default=False, help="Save this run on wandb")
@@ -392,6 +393,11 @@ class Trainer:
 
         else:
             raise NotImplementedError(f"Unknown evaluator {self.args.evaluator}")
+
+        cs_preds = metrics.pop("cs_preds", None)
+        normality_scores = metrics.pop("normality_scores", None)
+        if self.args.output_dir and self.args.save_preds and is_main_process(self.args):
+            write_preds(join(self.args.output_dir, "preds.txt"), cs_preds, normality_scores)
 
         if "cs_acc" in metrics:
             print(f"Closed set accuracy: {metrics['cs_acc']:.4f}")

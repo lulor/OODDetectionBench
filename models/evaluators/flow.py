@@ -30,5 +30,7 @@ def flow_evaluator(args, train_loader, test_loader, device, model, s=0):
     cs_acc = closed_set_accuracy(cs_predictions[known_mask], test_lbls[known_mask])
     metrics = calc_ood_metrics(test_lls, ood_labels)
     metrics["cs_acc"] = cs_acc
+    metrics["cs_preds"] = cs_predictions
+    metrics["normality_scores"] = test_lls
 
     return metrics

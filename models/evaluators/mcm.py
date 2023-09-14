@@ -42,7 +42,7 @@ def MCM_evaluator(args, train_loader, test_loader, model, clip_model, device, kn
 
     metrics = calc_ood_metrics(max_pred_prob, ood_labels)
     metrics["cs_acc"] = cs_acc
+    metrics["cs_preds"] = pred_cls
+    metrics["normality_scores"] = max_pred_prob
 
     return metrics 
-
-

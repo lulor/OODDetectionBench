@@ -46,8 +46,7 @@ def EVM_evaluator(args, train_loader, test_loader, device, model, contrastive_he
     if not args.disable_R2:
         r2_metric = compute_R2(train_feats, train_lbls, metric='cosine_distance' if normalize else 'euclidean_distance')
         metrics["support_R2"] = r2_metric
+    metrics["cs_preds"] = cs_preds
+    metrics["normality_scores"] = pred_prob
 
-
-    return metrics 
-
-
+    return metrics

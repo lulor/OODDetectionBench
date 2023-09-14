@@ -41,3 +41,14 @@ class LogUnbuffered:
         if self.out_file:
             self.out_file.close()
 
+def write_preds(filename, cs_preds, normality_scores):
+    if cs_preds is not None and normality_scores is not None:
+        assert len(cs_preds) == len(normality_scores), "Size mismatch"
+    with open(filename, "w") as f:
+        if cs_preds is not None and normality_scores is not None:
+            for id_pred, ood_score in zip(cs_preds, normality_scores):
+                f.write(f"{id_pred},{ood_score}\n")
+        else:
+            scores = cs_preds if normality_scores is None else normality_scores
+            for s in scores:
+                f.write(s + "\n")

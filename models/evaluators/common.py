@@ -64,7 +64,8 @@ def run_model(args, model, loader, device, flow=False, contrastive=False, suppor
         load = True
 
     if load:
-        for batch_idx, (images, target) in enumerate(tqdm(loader)):
+        for batch_idx, batch in enumerate(tqdm(loader)):
+            images, target = batch[0], batch[1] # ugly, but this also handles batches with more than 2 elements (see SSB)
             images = images.to(device)
             this_batch_size = len(images)
             if flow:

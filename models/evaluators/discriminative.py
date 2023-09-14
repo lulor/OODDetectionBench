@@ -35,8 +35,10 @@ def MSP_evaluator(args, train_loader, test_loader, device, model, disable_softma
 
     metrics = calc_ood_metrics(normality_scores, ood_labels)
     metrics["cs_acc"] = cs_acc
+    metrics["cs_preds"] = cs_preds
+    metrics["normality_scores"] = normality_scores
 
-    return metrics 
+    return metrics
 
 @torch.no_grad()
 def MLS_evaluator(args, train_loader, test_loader, device, model): 

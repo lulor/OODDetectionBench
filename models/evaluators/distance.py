@@ -73,8 +73,10 @@ def prototypes_distance_evaluator(args, train_loader, test_loader, device, model
 
     metrics = calc_ood_metrics(test_normality_scores, torch.from_numpy(ood_labels))
     metrics["cs_acc"] = cs_acc
+    metrics["cs_preds"] = test_predictions
+    metrics["normality_scores"] = test_normality_scores
 
-    return metrics 
+    return metrics
 
 @torch.no_grad()
 def knn_distance_evaluator(args, train_loader, test_loader, device, model, contrastive_head=False, K=50, normalize=False, cosine_sim=False): 
@@ -119,8 +121,10 @@ def knn_distance_evaluator(args, train_loader, test_loader, device, model, contr
     if not args.disable_R2:
         r2_metric = compute_R2(train_feats, train_lbls, metric='cosine_distance' if normalize else 'euclidean_distance')
         metrics["support_R2"] = r2_metric
+    metrics["cs_preds"] = test_predictions
+    metrics["normality_scores"] = test_normality_scores
 
-    return metrics 
+    return metrics
 
 @torch.no_grad()
 def knn_ood_evaluator(args, train_loader, test_loader, device, model, contrastive_head=False, K=50): 
