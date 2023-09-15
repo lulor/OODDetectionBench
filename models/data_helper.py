@@ -112,11 +112,9 @@ def get_eval_dataloader(args):
         assert support == "imagenet", f"Unknown support set {support} for SSB"
         assert test in ["imagenet_easy", "imagenet_hard"], f"Unknown test set {test} for SSB"
 
-        osr_split = test.split("_")[-1].capitalize()
-
         datasets = get_osr_datasets(
             dataset_name="imagenet",
-            osr_split=osr_split,
+            osr_split=test.split("_")[-1].capitalize(),
             train_transform=img_tr,
             test_transform=img_tr,
             eval_only=False,
