@@ -125,8 +125,13 @@ def get_eval_dataloader(args):
 
         train_dataset.labels = train_dataset.targets
 
-        known_class_names = [name for name, _ in sorted(train_dataset.class_to_idx.items(), key=lambda x: x[1])]    # names sorted by idx
-        n_known_classes = len(known_class_names)
+        n_known_classes = len(train_dataset.class_to_idx)
+
+        class_names_file = f"data/txt_lists/SSB/{support}_names.txt"
+        print(f"Reading class names from: {class_names_file}")
+        with open(class_names_file, "r") as f:
+            names = f.readlines()
+        known_class_names = [name.strip() for name in names]
 
     else:
 
