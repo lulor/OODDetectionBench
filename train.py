@@ -189,9 +189,6 @@ class Trainer:
                 self.output_num = 768
 
                 if self.args.model == "DINO":
-                    if not self.args.checkpoint_path:
-                        raise AssertionError("Specify ckpt for DINO")
-
                     # we set num_classes to 0 in order to obtain pooled feats
                     model = timm.create_model("deit_base_patch16_224", pretrained=True, num_classes=0)
 
@@ -207,6 +204,12 @@ class Trainer:
                                                                 add_cls_head=True, n_classes=self.n_known_classes)
                         if not args.disable_contrastive_head:
                             self.output_num = self.model.contrastive_out_dim
+
+                    ckpt_path = "pretrained_models/DINO_vitb.pth"
+                    print(f"Loading zeroshot checkpoint {ckpt_path}")
+                    zs_ckpt = torch.load(ckpt_path, map_location=ckpt_device)
+                    missing, unexpected = self.model.load_state_dict(clean_ckpt(zs_ckpt, self.model), strict=False)
+                    print(f"Missing keys: {missing}, unexpected keys: {unexpected}")
 
                 else:
                     import types 
